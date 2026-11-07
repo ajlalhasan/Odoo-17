@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Odoo 17 removed `attrs`/`states`: visibility and styling are written as
+         plain Python expressions on `invisible` and `decoration-*`. -->
+    <record id="view_order_form_margin_approval" model="ir.ui.view">
+        <field name="name">sale.order.form.margin.approval</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//header" position="inside">
+                <button name="action_request_manager_approval"
+                        type="object"
+                        string="Request Manager Approval"
+                        class="btn-danger"
+                        invisible="not requires_manager_approval or manager_approval_requested or state not in ('draft', 'sent')"
+                        groups="sales_team.group_sale_salesman"/>
+            </xpath>
+
+            <xpath expr="//notebook/page[@name='other_information']" position="after">
+                <page string="Margin Information" name="margin_information">
+                    <div class="alert alert-danger mb-3" role="alert"
+                         invisible="not requires_manager_approval">
+                        <i class="fa fa-exclamation-triangle me-1" title="Warning"/>
+                        Margin is below 10 %: manager approval is required.
+                    </div>
+                    <group>
+                        <group string="Margin Information">
+                            <field name="margin_percentage"
+                                   decoration-danger="requires_manager_approval"
+                                   decoration-bf="requires_manager_approval"/>
+                            <field name="requires_manager_approval"
+                                   decoration-danger="requires_manager_approval"/>
+                        </group>
+                        <group string="Approval Status"
+                               invisible="not manager_approval_requested">
+                            <field name="manager_approval_requested"/>
+                            <field name="manager_approval_request_date"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+
+    <!-- Optional column in the quotations list: handy for managers to filter and sort. -->
+    <record id="view_quotation_tree_margin_approval" model="ir.ui.view">
+        <field name="name">sale.order.tree.margin.approval</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_quotation_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='amount_total']" position="after">
+                <field name="margin_percentage" optional="hide"
+                       decoration-danger="requires_manager_approval"/>
+                <field name="requires_manager_approval" column_invisible="True"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_sales_order_filter_margin_approval" model="ir.ui.view">
+        <field name="name">sale.order.search.margin.approval</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='my_sale_orders_filter']" position="after">
+                <filter string="Needs Manager Approval" name="requires_manager_approval"
+                        domain="[('requires_manager_approval', '=', True)]"/>
+                <filter string="Approval Requested" name="manager_approval_requested"
+                        domain="[('manager_approval_requested', '=', True)]"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

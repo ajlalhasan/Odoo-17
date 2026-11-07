@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="sale_order_portal_margin_info"
+              inherit_id="sale.sale_order_portal_template"
+              name="Portal order: Show Margin Info">
+
+        <!-- Button in the same toolbar as "Download" / "Print", same Bootstrap style. -->
+        <xpath expr="//div[hasclass('o_download_pdf')]" position="inside">
+            <div class="flex-grow-1">
+                <button type="button"
+                        class="btn btn-secondary w-100 o_margin_info_btn"
+                        aria-expanded="false"
+                        t-att-aria-controls="'o_margin_info_panel_%s' % sale_order.id"
+                        t-att-data-order-id="sale_order.id"
+                        t-att-data-access-token="sale_order.access_token">
+                    <i class="fa fa-percent" role="img" aria-label="Margin" title="Margin"/>
+                    <span>Show Margin Info</span>
+                </button>
+            </div>
+        </xpath>
+
+        <!-- Inline panel, hidden until the widget fades it in. -->
+        <xpath expr="//div[hasclass('o_download_pdf')]" position="after">
+            <div t-att-id="'o_margin_info_panel_%s' % sale_order.id"
+                 class="o_margin_info_panel card mt-2"
+                 role="region"
+                 aria-live="polite"
+                 hidden="hidden">
+                <div class="card-body p-3">
+                    <h6 class="card-title mb-2">Margin Information</h6>
+                    <div class="o_margin_info_error text-danger small d-none"/>
+                    <dl class="row mb-0 small o_margin_info_content">
+                        <dt class="col-7 fw-normal text-muted">Margin</dt>
+                        <dd class="col-5 text-end mb-1 fw-bold o_margin_info_pct">-</dd>
+                        <dt class="col-7 fw-normal text-muted">Manager approval</dt>
+                        <dd class="col-5 text-end mb-0">
+                            <span class="badge o_margin_info_approval">-</span>
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </xpath>
+    </template>
+</odoo>

@@ -1,0 +1,20 @@
+// Fade + slight slide for the portal margin panel. Duration mirrors ANIMATION_MS in margin_info.js.
+.o_margin_info_panel {
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+
+    &.o_margin_info_open {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        transition: none;
+    }
+}
+
+.o_margin_info_btn.o_margin_info_loading {
+    cursor: progress;
+    opacity: 0.7;
+}
